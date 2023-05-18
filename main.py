@@ -19,9 +19,8 @@ logger = logging.getLogger("speech.spch_rcgn")
 logger.setLevel(logging.WARNING)
 
 bad_words = ["바보", "멍청이", "똥개"]
-global user
-user=""
-
+user=["찬경"]
+user_count=[]
 @client.event
 async def on_message(message):
     for word in bad_words:
@@ -70,15 +69,22 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    global user
     await on_voice_state_update_print(member, before, after)
+    await mute_voice(member, before, after)
 
-    if after.channel and member.name==user:
-        await member.edit(mute=True)
-        await asyncio.sleep(5)
-        await member.edit(mute=False)
-        user=""
 
+
+@client.event
+async def mute_voice(member, before, after):
+    if after.channel:
+        if len(user)!=0:
+            for m in user:
+                if m==member.name:
+                    await member.edit(mute=True, reason="욕설 사용")
+                    await asyncio.sleep(2)
+                    await member.edit(mute=False)
+                    user.remove(member.name)
+                    break
 
 @client.event
 async def on_voice_state_update_print(member, before, after):
@@ -91,5 +97,6 @@ async def on_voice_state_update_print(member, before, after):
         await member.guild.text_channels[0].send(f"{member.name}님이 자신의 마이크를 음소거했습니다.")
     elif before.self_deaf != after.self_deaf and after.self_deaf:
         await member.guild.text_channels[0].send(f"{member.name}님이 자신의 스피커를 음소거했습니다.")
+
 
 client.run(os.getenv("TOKEN"))
