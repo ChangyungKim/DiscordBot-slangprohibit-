@@ -20,5 +20,4 @@ from django.urls.conf import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('polls.urls')),
-    path('discordbot/', include('discordbot.urls')),
 ]
