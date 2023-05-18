@@ -23,6 +23,8 @@ user=["찬경"]
 user_count=[]
 @client.event
 async def on_message(message):
+    if 'said' in message.content:
+        await message.channel.send("123")
     for word in bad_words:
         if word in message.content:
             for i in range(5):
