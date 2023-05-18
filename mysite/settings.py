@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'polls.apps.PollsConfig'
+    'polls.apps.PollsConfig',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cap2_test',
         'USER':'root',
-        'PASSWORD':'kwonyh0315@@',
+        'PASSWORD':'w9azn8ql5^^',
         'HOST':'127.0.0.1',
         'PORT':'3306',
     }
