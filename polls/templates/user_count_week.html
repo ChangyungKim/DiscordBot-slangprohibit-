@@ -1,0 +1,10 @@
+<h3>Count 출력</h3>
+
+{% for c in user_count_week %}
+    <div>
+    <h5>{{c.server}}</h5>
+    <h5>{{c.user}}</h5>
+    <h5>{{c.year}}</h5>
+    <h5>{{c.week}}</h5>
+    <h5>{{c.count}}</h5>
+{% endfor %}

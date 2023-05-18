@@ -1,0 +1,33 @@
+<h1>Home</h1>
+
+<h1>Django 사용자 입력받기</h1>
+  <h2>HTML Form 이용하기</h2>
+  <hr>
+
+
+<form action="{% url 'storecountweek' %}" method="POST">
+  {% csrf_token %}
+  <div>
+    <label for="server_count">서버</label>
+    <input type="text" name="server_count" id="server_count">
+  </div>
+  <div>
+    <label for="user_count">유저</label>
+    <input type="text" name="user_count" id="user_count">
+  </div>
+  <div>
+    <label for="count">횟수</label>
+    <input type="int" name="count" id="count">
+  </div>
+  <div>
+    <label for="year">날짜</label>
+    <input type="int" name="year" id="year">
+  </div>
+  <div>
+    <label for="week">주차</label>
+    <input type="int" name="week" id="week">
+  </div>
+
+  <br>
+  <input type="submit" value="제출">
+</form>

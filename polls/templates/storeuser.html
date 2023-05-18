@@ -1,0 +1,18 @@
+<h1>Home</h1>
+
+<h1>Django 사용자 입력받기</h1>
+  <h2>HTML Form 이용하기</h2>
+  <hr>
+  <form action="{% url 'storeuser' %}" method="POST">
+    {% csrf_token %}
+    <div>
+      <label for="server_use">서버</label>
+      <input type="text" name="server_use" id="server_use">
+    </div>
+    <div>
+      <label for="user_use">유저</label>
+      <input type="text" name="user_use" id="user_use">
+    </div>
+    <br>
+    <input type="submit" value="제출">
+  </form>

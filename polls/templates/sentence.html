@@ -1,0 +1,9 @@
+<h3>저장된 문장을 출력</h3>
+
+{% for s in check_sentence %}
+    <div>
+    <h5>{{s.server}}</h5>
+    <h5>{{s.user}}</h5>
+    <h5>{{s.sentence}}</h5>
+    <h5>{{s.datetime}}</h5>
+{% endfor %}
