@@ -7,8 +7,6 @@ from speech.pcm_src import PcmSrc
 
 
 class SpchSnk(Sink):
-    """A special sink for SpeechRecognition"""
-
     def __init__(self, callback, ctx):
         super().__init__()
         self.ctx = ctx

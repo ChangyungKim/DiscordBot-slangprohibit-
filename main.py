@@ -25,10 +25,8 @@ user_count=[]
 @client.event
 async def on_message(message):
     if 'said' in message.content:
-        u = message.content.split('said ')[0]
-        t = message.content.split('said ')[1]
-        await message.channel.send(u)
-        await message.channel.send(t)
+        u = message.content.split('said:')[0]
+        t = message.content.split('said:')[1]
     for word in bad_words:
         if word in message.content:
             for i in range(5):
