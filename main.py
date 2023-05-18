@@ -1,6 +1,7 @@
 import discord
 import logging
 import os
+import requests
 from discord.ext import commands
 import asyncio
 from dotenv import load_dotenv
@@ -25,22 +26,46 @@ user_count=[]
 @client.event
 async def on_message(message):
     if 'said' in message.content:
-        u = message.content.split('said:')[0]
-        t = message.content.split('said:')[1]
-    for word in bad_words:
-        if word in message.content:
-            for i in range(5):
-                await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
-                await asyncio.sleep(0.5)
-            await message.channel.send(f"{message.author.mention}님을 뮤트 처리 했습니다.")
-            await message.author.edit(mute=True)
+        u = message.content.split('said:')[0].strip()[2:-1]
+        t = message.content.split('said:')[1].strip()
+        url_storesentence = "http://127.0.0.1:8000/storesentence/"
+        userid = u
+        spoken_sentence = t
+        serverid = "aaa" #random
+        sentence_json = {"server": serverid, "user": userid, "sentence": spoken_sentence}
+        request = requests.post(url_storesentence, json=sentence_json)
+        count = request.json()["count"]
+        if count > 0:
+            await message.channel.send(f"{u}님, 욕설은 삼가해주세요!")
+            await asyncio.sleep(0.5)
+            await message.channel.send(f"{u}님을 뮤트 처리 했습니다.")
+            await message.channel.send(u)
+            chk = False
+            for member in message.guild.members:
+                if str(member.id) == u:
+                    chk = True
+                    await member.edit(mute=True)
+                    await asyncio.sleep(30)
+                    await member.edit(mute=False)
+                if chk: break
 
-            await asyncio.sleep(30)
 
-            await message.author.edit(mute=False)
-
-            await message.channel.send(f"{message.author.mention}님의 뮤트 처리를 해제했습니다.")
-            return
+        await message.channel.send(f"{u}님의 뮤트 처리를 해제했습니다.")
+        return
+    # for word in bad_words:
+    #     if word in message.content:
+    #         for i in range(5):
+    #             await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
+    #             await asyncio.sleep(0.5)
+    #         await message.channel.send(f"{message.author.mention}님을 뮤트 처리 했습니다.")
+    #         await message.author.edit(mute=True)
+    #         await message.channel.send(message.author)
+    #         await asyncio.sleep(30)
+    #
+    #         await message.author.edit(mute=False)
+    #
+    #         await message.channel.send(f"{message.author.mention}님의 뮤트 처리를 해제했습니다.")
+    #         return
     await client.process_commands(message)
 
 @client.command(name='명령어')
