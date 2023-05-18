@@ -1,16 +1,26 @@
 import discord
+import logging
+import os
 from discord.ext import commands
 import asyncio
+from dotenv import load_dotenv
 
+load_dotenv()
 
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
 
-client.load_extension("spch.spch_rcgn")
+client.load_extension("speech.spch_rcgn")
+
+# Configuration of speech logger
+logging.basicConfig(format="%(message)s")
+logger = logging.getLogger("speech.spch_rcgn")
+logger.setLevel(logging.WARNING)
 
 bad_words = ["바보", "멍청이", "똥개"]
-
+user=["찬경"]
+user_count=[]
 @client.event
 async def on_message(message):
     for word in bad_words:
@@ -60,8 +70,21 @@ async def on_ready():
 @client.event
 async def on_voice_state_update(member, before, after):
     await on_voice_state_update_print(member, before, after)
+    await mute_voice(member, before, after)
 
 
+
+@client.event
+async def mute_voice(member, before, after):
+    if after.channel:
+        if len(user)!=0:
+            for m in user:
+                if m==member.name:
+                    await member.edit(mute=True, reason="욕설 사용")
+                    await asyncio.sleep(2)
+                    await member.edit(mute=False)
+                    user.remove(member.name)
+                    break
 
 @client.event
 async def on_voice_state_update_print(member, before, after):
@@ -76,4 +99,4 @@ async def on_voice_state_update_print(member, before, after):
         await member.guild.text_channels[0].send(f"{member.name}님이 자신의 스피커를 음소거했습니다.")
 
 
-
+client.run(os.getenv("TOKEN"))
