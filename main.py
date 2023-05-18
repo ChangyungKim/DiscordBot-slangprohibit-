@@ -16,7 +16,7 @@ async def on_message(message):
     for word in bad_words:
         if word in message.content:
             for i in range(5):
-                await message.channel.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
+                await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
                 await asyncio.sleep(0.5)
             await message.channel.send(f"{message.author.mention}님을 뮤트 처리 했습니다.")
             await message.author.edit(mute=True)
