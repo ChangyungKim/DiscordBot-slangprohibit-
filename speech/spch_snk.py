@@ -33,7 +33,6 @@ class SpchSnk(Sink):
             stopper()
 
     def listen_in_background(self, callback, ctx, user):
-        """Same as Speech_Recognition but allows custom parameters, i.e., user"""
         running = [True]
 
         def threaded_listen():
