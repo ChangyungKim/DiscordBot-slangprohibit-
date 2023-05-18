@@ -8,8 +8,9 @@ intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
 
 client.load_extension("spch.spch_rcgn")
-
 bad_words = ["바보", "멍청이", "똥개"]
+global user
+user=""
 
 @client.event
 async def on_message(message):
@@ -59,8 +60,14 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member, before, after):
+    global user
     await on_voice_state_update_print(member, before, after)
 
+    if after.channel and member.name==user:
+        await member.edit(mute=True)
+        await asyncio.sleep(5)
+        await member.edit(mute=False)
+        user=""
 
 
 @client.event
@@ -75,5 +82,5 @@ async def on_voice_state_update_print(member, before, after):
     elif before.self_deaf != after.self_deaf and after.self_deaf:
         await member.guild.text_channels[0].send(f"{member.name}님이 자신의 스피커를 음소거했습니다.")
 
-
+client.run("MTEwMDc4OTg3ODg2NzkwNjU4MA.GBGpsL.Hy2fFH9n1YmyWCo4kNOn-Z7P_xx_J-axEM3qQc")
 
