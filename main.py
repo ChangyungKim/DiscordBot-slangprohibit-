@@ -26,7 +26,7 @@ user_count=[]
 @client.event
 async def on_message(message):
     if 'said' in message.content:
-        u = message.content.split('said:')[0].strip()[2:-1]
+        u = message.content.split('said:')[0].strip()
         t = message.content.split('said:')[1].strip()
         url_storesentence = "http://127.0.0.1:8000/storesentence/"
         userid = u
@@ -39,10 +39,9 @@ async def on_message(message):
             await message.channel.send(f"{u}님, 욕설은 삼가해주세요!")
             await asyncio.sleep(0.5)
             await message.channel.send(f"{u}님을 뮤트 처리 했습니다.")
-            await message.channel.send(u)
             chk = False
             for member in message.guild.members:
-                if str(member.id) == u:
+                if str(member.id) == u[2:-1]:
                     chk = True
                     await member.edit(mute=True)
                     await asyncio.sleep(30)
