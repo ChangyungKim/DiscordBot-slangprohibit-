@@ -1,4 +1,5 @@
 import discord
+import logging
 import os
 from discord.ext import commands
 import asyncio
@@ -9,6 +10,13 @@ load_dotenv()
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
+
+client.load_extension("speech.spch_rcgn")
+
+# Configuration of speech logger
+logging.basicConfig(format="%(message)s")
+logger = logging.getLogger("speech.spch_rcgn")
+logger.setLevel(logging.WARNING)
 
 bad_words = ["바보", "멍청이", "똥개"]
 global user
