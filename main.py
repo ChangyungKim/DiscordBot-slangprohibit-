@@ -2,9 +2,12 @@ import discord
 from discord.ext import commands
 import asyncio
 
+
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
+
+client.load_extension("spch.spch_rcgn")
 
 bad_words = ["바보", "멍청이", "똥개"]
 
