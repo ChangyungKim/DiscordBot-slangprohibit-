@@ -79,7 +79,7 @@ async def mute_voice(member, before, after):
     if after.channel:
         if len(user)!=0:
             for m in user:
-                if m==member.name:
+                if m==member.id:
                     await member.edit(mute=True, reason="욕설 사용")
                     await asyncio.sleep(2)
                     await member.edit(mute=False)
