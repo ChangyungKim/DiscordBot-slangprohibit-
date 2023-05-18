@@ -9,7 +9,6 @@ SAMPLES_PER_FRAME_MONO = 960
 
 
 class PcmSrc(AudioSource):
-    """Creates a new instance which stores PCM frames temporarily for SpeechRecognition."""
 
     def __init__(self):
         self.SAMPLE_WIDTH = 2

@@ -17,7 +17,7 @@ class SpeechCog(commands.Cog):
 
     @discord.command()
     async def start(self, ctx: discord.ApplicationContext):
-        """Start transcription."""
+        # Start transcription.
         voice = ctx.author.voice
         if not voice:
             return await ctx.respond("You're not in a vc right now")
@@ -33,7 +33,7 @@ class SpeechCog(commands.Cog):
 
     @discord.command()
     async def stop(self, ctx: discord.ApplicationContext):
-        """Stop transcription."""
+        # Stop transcription.
         if ctx.guild.id in self.connections:
             vc = self.connections[ctx.guild.id]
             vc.stop_recording()
