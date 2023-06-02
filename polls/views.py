@@ -163,7 +163,7 @@ def user_count_date(request,serverid,userid,year,month,day):
 
 @csrf_exempt
 def server_count_week(request,serverid,year,week):
-    server_count_week_info = list(models.user_slang_count_week.objects.filter(server=serverid,year=year,week=week).values())
+    server_count_week_info = list(models.user_slang_count_week.objects.filter(server=serverid,year=year,week=week).order_by('-user').values())
     result=[]
     for server_count in server_count_week_info:
         result.append(server_count)
@@ -173,7 +173,7 @@ def server_count_week(request,serverid,year,week):
 @csrf_exempt
 def server_count_date(request,serverid,year,month,day):
     dateid=date(year,month,day)
-    server_count_date_info = list(models.user_slang_count_date.objects.filter(server=serverid,date=dateid).values())
+    server_count_date_info = list(models.user_slang_count_date.objects.filter(server=serverid,date=dateid).order_by('-user').values())
     result=[]
     for server_count in server_count_date_info:
         result.append(server_count)
