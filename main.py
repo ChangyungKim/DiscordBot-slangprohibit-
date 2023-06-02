@@ -1,4 +1,15 @@
 import discord
+from discord.ext import commands
+import asyncio
+import requests
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+from io import BytesIO
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+import datetime
+
 import logging
 import os
 import requests
@@ -26,7 +37,7 @@ user_count=[]
 @client.event
 async def on_message(message):
     if 'said' in message.content:
-        u = message.content.split('said:')[0].strip()[2:-1]
+        u = message.content.split('said:')[0].strip()
         t = message.content.split('said:')[1].strip()
         url_storesentence = "http://127.0.0.1:8000/storesentence/"
         userid = u
@@ -39,10 +50,9 @@ async def on_message(message):
             await message.channel.send(f"{u}님, 욕설은 삼가해주세요!")
             await asyncio.sleep(0.5)
             await message.channel.send(f"{u}님을 뮤트 처리 했습니다.")
-            await message.channel.send(u)
             chk = False
             for member in message.guild.members:
-                if str(member.id) == u:
+                if str(member.id) == u[2:-1]:
                     chk = True
                     await member.edit(mute=True)
                     await asyncio.sleep(30)
@@ -89,6 +99,132 @@ async def present_member(ctx):
     memberlist=[member.name for member in members]
     present_members="\n".join(memberlist)
     await ctx.send(f"현재 {voice_state.channel.name}에 있는 멤버: \n{present_members}")
+    
+############################################################################
+
+@client.command(name='user_count_date')
+async def print_user_count_date(ctx):
+    url="http://127.0.0.1:8000/"+serverid+"/aaaa/count_date/2023/05/18"
+    response=requests.get(url)
+    print("status_code:{}".format(response.status_code))
+    if len(response.json())==0:
+        print("list is empty")
+
+    else:
+        serverid=response.json()["server"]
+        userid=response.json()["user"]
+        count_date=response.json()["count"]
+        date=response.json()["date"]
+        out =serverid+'/'+userid+'/'+str(count_date)+'/'+str(date)+'/'
+        await ctx.send(out)
+    
+@client.command(name='user_count_week')
+async def print_user_count_week(ctx):
+    url="http://127.0.0.1:8000/"+serverid+"/aaaa/count_week/2023/20"
+    response=requests.get(url)
+    print("status_code:{}".format(response.status_code))
+    if len(response.json())==0:
+        print("list is empty")
+    else:
+        serverid=response.json()["server"]
+        userid=response.json()["user"]
+        count_week=response.json()["count"]
+        year=response.json()["year"]
+        week=response.json()["week"]
+        out =serverid+'/'+userid+'/'+str(count_week)+'/'+str(year)+'/'+str(week)+'/'
+        await ctx.send(out)
+
+@client.command(name='서버하루통계')
+async def print_server_count_date(ctx):
+    slang_count={}
+    embed=discord.Embed(title="오늘 통계", description="오늘 하루 욕설 횟수", color=discord.Color.dark_orange())
+    serverid=str(ctx.message.guild.id)
+    year=str(datetime.date.today().year)
+    month=str(datetime.date.today().month)
+    day=str(datetime.date.today().day)
+    url="http://127.0.0.1:8000/"+serverid+"/count_date/"+year+"/"+month+"/"+day
+    response=requests.get(url)
+    print("status_code:{}".format(response.status_code))
+    if len(response.json())==0:
+        print("list is empty")
+    else:
+        for i in range(0,len(response.json())):
+            serverid=response.json()[i]["server"]
+            userid=response.json()[i]["user"]
+            count_date=response.json()[i]["count"]
+            date=response.json()[i]["date"]
+            user=await client.fetch_user(int(userid))
+            embed.add_field(name=user.name, value=count_date, inline=True)
+            slang_count[user.name]=count_date
+        users=list(slang_count.keys())
+        slang=list(slang_count.values())
+        print(users)
+        plt.bar(users, slang)
+        plt.rcParams['font.family']='Malgun Gothic'
+        plt.xlabel('욕설 사용자')
+        plt.ylabel('욕설 횟수')
+        
+        plt.title('욕설 사용 통계')
+        
+        buffer=BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        
+        file=discord.File(buffer, filename='slangcount.png')
+        await ctx.send(embed=embed)
+        await ctx.send(file=file)
+       
+
+@client.command(name='서버주차통계')
+async def print_server_count_week(ctx):
+    embed=discord.Embed(title="이번주 통계", description="이번주 욕설 횟수", color=discord.Color.dark_orange())
+    serverid=str(ctx.message.guild.id)
+    year=str(datetime.date.today().year)
+    week=str(datetime.date.today().isocalendar()[1])
+    url="http://127.0.0.1:8000/"+serverid+"/count_week/"+year+"/"+week
+    response=requests.get(url)
+    print("status_code:{}".format(response.status_code))
+    if len(response.json())==0:
+        print("list is empty")
+    else:
+        for i in range(0,len(response.json())):
+            serverid=response.json()[i]["server"]
+            userid=response.json()[i]["user"]
+            count_week=response.json()[i]["count"]
+            year=response.json()[i]["year"]
+            week=response.json()[i]["week"]
+            user=await client.fetch_user(int(userid))
+            embed.add_field(name=user.name, value=count_week, inline=True)
+        await ctx.send(embed=embed)
+
+@client.command(name='서버5주통계')
+async def print_server_count_week(ctx):
+    embed=discord.Embed(title="통계", description="주차별 욕설 횟수", color=discord.Color.dark_orange())
+    serverid=str(ctx.message.guild.id)
+    year=str(datetime.date.today().year)
+    week=datetime.date.today().isocalendar()[1]
+    for i in range (4,-1,-1):
+        week=str(datetime.date.today().isocalendar()[1] - i)
+        url="http://127.0.0.1:8000/"+serverid+"/count_week/"+year+"/"+week
+        response=requests.get(url)
+        print("status_code:{}".format(response.status_code))
+        if len(response.json())==0:
+            print("list is empty")
+        else:
+            for i in range(0,len(response.json())):
+                serverid=str(response.json()[i]["server"])
+                userid=response.json()[i]["user"]
+                count_week=response.json()[i]["count"]
+                year=str(response.json()[i]["year"])
+                week_pasing=response.json()[i]["week"]
+                user=await client.fetch_user(int(userid))
+
+                embed.add_field(name=user.name, value=count_week, inline=True)
+            embed.add_field(name="주차", value=week_pasing, inline=True)
+
+    await ctx.send(embed=embed)   
+
+############################################################################
 
 @client.event
 async def on_ready():
