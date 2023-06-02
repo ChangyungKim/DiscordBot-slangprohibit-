@@ -88,6 +88,8 @@ async def present_member(ctx):
     memberlist=[member.name for member in members]
     present_members="\n".join(memberlist)
     await ctx.send(f"현재 {voice_state.channel.name}에 있는 멤버: \n{present_members}")
+    
+############################################################################
 
 @client.command(name='user_count_date')
 async def print_user_count_date(ctx):
@@ -213,6 +215,7 @@ async def print_server_count_week(ctx):
 
     await ctx.send(embed=embed)   
 
+############################################################################
 
 @client.event
 async def on_ready():
