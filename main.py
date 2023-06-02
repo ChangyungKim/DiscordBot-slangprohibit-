@@ -1,4 +1,15 @@
 import discord
+from discord.ext import commands
+import asyncio
+import requests
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+from io import BytesIO
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+import datetime
+
 import logging
 import os
 import requests
@@ -148,14 +159,12 @@ async def print_server_count_date(ctx):
         users=list(slang_count.keys())
         slang=list(slang_count.values())
         print(users)
-        font_path="BMEULJIROTTF.ttf"
-        font_prob=font_manager.FontProperties(fname=font_path)
         plt.bar(users, slang)
         plt.rcParams['font.family']='Malgun Gothic'
-        plt.xlabel('욕설 사용자', fontproperties=font_prob)
-        plt.ylabel('욕설 횟수', fontproperties=font_prob)
+        plt.xlabel('욕설 사용자')
+        plt.ylabel('욕설 횟수')
         
-        plt.title('욕설 사용 통계', fontproperties=font_prob)
+        plt.title('욕설 사용 통계')
         
         buffer=BytesIO()
         plt.savefig(buffer, format='png')
