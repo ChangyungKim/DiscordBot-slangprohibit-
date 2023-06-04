@@ -1,9 +1,10 @@
+from pdb import post_mortem
 from django.shortcuts import get_object_or_404,render, redirect
 from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
-from .serializers import ServerUserSerializer,ServerBanSerializer,UserCountDateSerializer,UserCountWeekSerializer,UserSentenceSerializer
+from .serializers import ServerUserSerializer,ServerBanSerializer,UserCountDateSerializer,UserCountWeekSerializer,UserSentenceSerializer,ServerSlangSerializer
 from django.core import serializers
 from django.urls import reverse
 from . import models
@@ -11,17 +12,25 @@ from datetime import datetime,date
 import json
 # Create your views here.
 
-json_dumps_params = {'ensure_ascii':False} # 한글 등의 유니코드는 16진수로 표현되므로 이를 False 로 바꿔주면 한글문자가 그대로 출력됩니다.
-
 def home(request):
     return render(request, 'index.html')
 
 @csrf_exempt
 def check_sentence(request,serverid,userid):
     sentence_info = list(models.user_sentence.objects.filter(server=serverid,user=userid).values())
-    return JsonResponse({"user": sentence_info[1],"server":sentence_info[0],"sentence":sentence_info[3]},json_dumps_params, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"user": sentence_info[1],"server":sentence_info[0],"sentence":sentence_info[3]}, safe=False, status=status.HTTP_200_OK)
 
+def store_slang(request):
+    if request.method == 'POST':
+        slang=models.slang_dict()
+        slang.slang_text=request.POST['slang']
+        slang.save()
+        return redirect('home')
 
+    else:
+        return render(request, 'add_slang.html')
+      
+        
 
 @csrf_exempt
 def store_sentence(request):
@@ -96,11 +105,11 @@ def store_user(request):
     requestedData = JSONParser().parse(request)
     serializers = ServerUserSerializer(data=requestedData)
     if models.server_user.objects.filter(server=requestedData['server'],user=requestedData['user']).exists():
-        return JsonResponse({"MESSAGE": "The user "+requestedData['user']+" is already exists in server"+requestedData['server']},json_dumps_params,safe=False,status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"MESSAGE": "The user "+requestedData['user']+" is already exists in server"+requestedData['server']},safe=False,status=status.HTTP_400_BAD_REQUEST)
     
     elif serializers.is_valid():
         serializers.save()
-        return JsonResponse({"MESSAGE": "Success to Add"},json_dumps_params,safe=False, status=status.HTTP_201_CREATED)
+        return JsonResponse({"MESSAGE": "Success to Add"},safe=False, status=status.HTTP_201_CREATED)
 
 @csrf_exempt
 def store_count_date(request):
@@ -119,7 +128,7 @@ def store_count_date(request):
     elif serializers.is_valid():
         serializers.save()
     
-    return JsonResponse({"MESSAGE": "Success to Add"},json_dumps_params,safe=False, status=status.HTTP_201_CREATED)
+    return JsonResponse({"MESSAGE": "Success to Add"},safe=False, status=status.HTTP_201_CREATED)
 
 
 
@@ -142,7 +151,7 @@ def store_count_week(request):
     elif serializers.is_valid():
         serializers.save()
     
-    return JsonResponse({"MESSAGE": "Success to Add"},json_dumps_params,safe=False, status=status.HTTP_201_CREATED)
+    return JsonResponse({"MESSAGE": "Success to Add"},safe=False, status=status.HTTP_201_CREATED)
 
 
 @csrf_exempt
@@ -184,19 +193,24 @@ def server_count_date(request,serverid,year,month,day):
 def store_ban(request):
     requestedData = JSONParser().parse(request)
     serializers = ServerBanSerializer(data=requestedData)
-    if models.server_banned.objects.filter(server=requestedData['server'],banned=requestedData['banned']).exists():
-        return JsonResponse({"MESSAGE": "The word "+requestedData['banned']+" is already exists in server"+requestedData['server']},json_dumps_params,safe=False,status=status.HTTP_400_BAD_REQUEST)
+    serverid=requestedData['server']
+    banned=requestedData['banned']
+    if models.server_banned.objects.filter(server=serverid,banned=banned).exists():
+        return JsonResponse({"MESSAGE": "The word "+serverid+" is already exists in server"+banned},safe=False,status=status.HTTP_400_BAD_REQUEST)
     
     elif serializers.is_valid():
         serializers.save()
-        return JsonResponse({"MESSAGE": "Success to Add"},json_dumps_params,safe=False, status=status.HTTP_201_CREATED)
+        return JsonResponse({"MESSAGE": "Success to Add"},safe=False, status=status.HTTP_201_CREATED)
+
 
 
 @csrf_exempt
 def banned_check(request,serverid):
 
     banned_info = list(models.server_banned.objects.filter(server=serverid).values())
+
     result=[]
-    for ban_word in banned_info:
-        result.append(ban_word)
-    return JsonResponse(json.dumps(result,ensure_ascii=False), json_dumps_params,safe=False, status=status.HTTP_200_OK)
+    for server_ban in banned_info:
+        result.append(server_ban)
+    print(result,type(result))
+    return JsonResponse(result, safe=False, status=status.HTTP_200_OK)
