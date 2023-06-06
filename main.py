@@ -19,8 +19,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-host_url="http://127.0.0.1:8000/"
-####    host_url="http://15.164.32.148:8000/"       ####배포용
+##host_url="http://127.0.0.1:8000/"
+host_url="http://15.164.32.148:8000/"
 
 
 intents = discord.Intents.all()
@@ -215,51 +215,55 @@ async def print_server_count_week(ctx):
 
 @client.command(name='서버5주통계')
 async def print_server_count_week(ctx):
-    embed=discord.Embed(title="통계", description="주차별 욕설 횟수", color=discord.Color.dark_orange())
-    serverid=str(ctx.message.guild.id)
-    year=str(datetime.date.today().year)
-    week=datetime.date.today().isocalendar()[1]
-    legends=[]
-    users=[]
-    slang=[]
-    for i in range (4,-1,-1):
-        week=str(datetime.date.today().isocalendar()[1] - i)
-        url=host_url+serverid+"/count_week/"+year+"/"+week
-        response=requests.get(url)
+    embed = discord.Embed(title="통계", description="주차별 욕설 횟수", color=discord.Color.dark_orange())
+    serverid = str(ctx.message.guild.id)
+    year = str(datetime.date.today().year)
+    week = datetime.date.today().isocalendar()[1]
+    users = []
+    slang = []
+    week_lst=[]
+    colors = ['red', 'blue', 'green', 'yellow', 'purple']
+    fig, ax = plt.subplots()
+    for i in range(4, -1, -1):
+        week = str(datetime.date.today().isocalendar()[1] - i)
+        week_lst.append(week)
+        url = host_url + serverid + "/count_week/" + year + "/" + week
+        response = requests.get(url)
         print("status_code:{}".format(response.status_code))
 
-        if len(response.json())==0:
+        if len(response.json()) == 0:
             print("list is empty")
         else:
-            legends.append(week+"주차")
-
-            for i in range(0,len(response.json())):
-                serverid=str(response.json()[i]["server"])
-                userid=response.json()[i]["user"]
-                count_week=response.json()[i]["count"]
-                year=str(response.json()[i]["year"])
-                week_pasing=response.json()[i]["week"]
-                user=await client.fetch_user(int(userid))
-
+            for i in range(0, len(response.json())):
+                serverid = str(response.json()[i]["server"])
+                userid = response.json()[i]["user"]
+                count_week = response.json()[i]["count"]
+                year = str(response.json()[i]["year"])
+                week_pasing = response.json()[i]["week"]
+                user = await client.fetch_user(int(userid))
                 embed.add_field(name=user.name, value=count_week, inline=True)
                 users.append(user.name)
                 slang.append(count_week)
-
             embed.add_field(name="주차", value=week_pasing, inline=True)
-    plt.plot(users, slang, marker='o')
+    user_len=int(len(users)/5)
+    for i in range(user_len):
+        indices=[idx for idx in range(len(users)) if idx % user_len==i]
+        y_data=[slang[idx] for idx in indices]
+        ax.plot(week_lst, y_data, color=colors[i], marker='o', label='user'+str(i+1))
+    ax.set_xlabel('주차')
+    ax.set_ylabel('욕설 사용 횟수')
+    ax.set_title('주차별 욕설 횟수')
+    ax.legend()
 
-    plt.xlabel('욕설 사용자')
-    plt.ylabel('욕설 사용 횟수')
-    plt.title('주차별 욕설 횟수')
-
-    plt.legend(legends)
-    buffer=BytesIO()
+    buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    file=discord.File(buffer, filename='slangcount.png')
+    file = discord.File(buffer, filename='slangcount.png')
     await ctx.send(embed=embed)
     await ctx.send(file=file)
+    plt.close(fig)
+
 
 
 ############################################################################
