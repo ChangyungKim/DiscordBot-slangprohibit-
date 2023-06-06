@@ -19,6 +19,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+host_url="http://127.0.0.1:8000/"
+####    host_url="http://15.164.32.148:8000/"       ####배포용
+
 
 intents = discord.Intents.all()
 intents.members = True
@@ -39,7 +42,7 @@ async def on_message(message):
     if 'said' in message.content:
         u = message.content.split('said:')[0].strip()
         t = message.content.split('said:')[1].strip()
-        url_storesentence = "http://127.0.0.1:8000/storesentence/"
+        url_storesentence = host_url+"storesentence/"
         userid = u
         spoken_sentence = t
         serverid = "aaa" #random
@@ -100,11 +103,11 @@ async def present_member(ctx):
     present_members="\n".join(memberlist)
     await ctx.send(f"현재 {voice_state.channel.name}에 있는 멤버: \n{present_members}")
     
-############################################################################
+##################################통계 관련 기능 추가##########################################
 
 @client.command(name='user_count_date')
 async def print_user_count_date(ctx):
-    url="http://127.0.0.1:8000/"+serverid+"/aaaa/count_date/2023/05/18"
+    url=host_url+serverid+"/aaaa/count_date/2023/05/18"
     response=requests.get(url)
     print("status_code:{}".format(response.status_code))
     if len(response.json())==0:
@@ -120,7 +123,7 @@ async def print_user_count_date(ctx):
     
 @client.command(name='user_count_week')
 async def print_user_count_week(ctx):
-    url="http://127.0.0.1:8000/"+serverid+"/aaaa/count_week/2023/20"
+    url=host_url+serverid+"/aaaa/count_week/2023/20"
     response=requests.get(url)
     print("status_code:{}".format(response.status_code))
     if len(response.json())==0:
@@ -142,7 +145,7 @@ async def print_server_count_date(ctx):
     year=str(datetime.date.today().year)
     month=str(datetime.date.today().month)
     day=str(datetime.date.today().day)
-    url="http://127.0.0.1:8000/"+serverid+"/count_date/"+year+"/"+month+"/"+day
+    url=host_url+serverid+"/count_date/"+year+"/"+month+"/"+day
     response=requests.get(url)
     print("status_code:{}".format(response.status_code))
     if len(response.json())==0:
@@ -181,7 +184,7 @@ async def print_server_count_week(ctx):
     serverid=str(ctx.message.guild.id)
     year=str(datetime.date.today().year)
     week=str(datetime.date.today().isocalendar()[1])
-    url="http://127.0.0.1:8000/"+serverid+"/count_week/"+year+"/"+week
+    url=host_url+serverid+"/count_week/"+year+"/"+week
     response=requests.get(url)
     print("status_code:{}".format(response.status_code))
     if len(response.json())==0:
@@ -205,7 +208,7 @@ async def print_server_count_week(ctx):
     week=datetime.date.today().isocalendar()[1]
     for i in range (4,-1,-1):
         week=str(datetime.date.today().isocalendar()[1] - i)
-        url="http://127.0.0.1:8000/"+serverid+"/count_week/"+year+"/"+week
+        url=host_url+serverid+"/count_week/"+year+"/"+week
         response=requests.get(url)
         print("status_code:{}".format(response.status_code))
         if len(response.json())==0:
@@ -224,6 +227,37 @@ async def print_server_count_week(ctx):
 
     await ctx.send(embed=embed)   
 
+############################################################################
+
+
+################################금지어 관련 기능 추가############################################
+
+@client.command(name='금지어추가')
+async def 금지어추가(ctx,*,text):
+    server=str(ctx.message.guild.id)
+    url_storeban=host_url+"storeban/"
+    ban_word=text
+    ban_json={"server":server,"banned":ban_word}
+    response=requests.post(url_storeban, json=ban_json)
+    if response.status_code==201:
+        await ctx.send("금지어 '"+text+"' 가 추가되었습니다.")
+    elif response.status_code==400:
+        await ctx.send("금지어 '"+text+"' 는 이미 추가되어 있습니다.")
+
+
+
+@client.command(name='금지어확인')
+async def print_ban_word(ctx):
+    serverid=str(ctx.message.guild.id)
+    url=host_url+serverid+"/banned_check/"
+    response=requests.get(url)
+    print("status_code:{}".format(response.status_code))
+    
+    for i in range(0,len(response.json())):
+        server=response.json()[i]["server"]
+        ban_word=response.json()[i]["banned"]
+        out=server+'/'+ban_word
+        await ctx.send(out)
 ############################################################################
 
 @client.event

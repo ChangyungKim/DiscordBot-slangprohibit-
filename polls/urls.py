@@ -10,6 +10,7 @@ urlpatterns=[
     path('<serverid>/count_date/<int:year>/<int:month>/<int:day>',views.server_count_date,name='server_count_date'),
     path('<serverid>/count_week/<int:year>/<int:week>',views.server_count_week,name='server_count_week'),
     path('storeban/',views.store_ban,name='storeban'),
+    path('storeslang/',views.store_slang,name='storeslang'),
     path('storeuser/',views.store_user,name='storeuser'),
     path('storecountdate/',views.store_count_date,name='storecountdate'),
     path('storecountweek/',views.store_count_week,name='storecountweek'),
