@@ -141,7 +141,7 @@ async def print_server_count_date(ctx):
         buffer=BytesIO()
         plt.savefig(buffer, format='png')
         buffer.seek(0)
-        file=discord.File(buffer, filename='slangcount.png')
+        file=discord.File(buffer, filename='slangcount1.png')
         await ctx.send(embed=embed)
         await ctx.send(file=file)
        
@@ -178,7 +178,7 @@ async def print_server_count_week(ctx):
         buffer = BytesIO()
         plt.savefig(buffer, format='png')
         buffer.seek(0)
-        file = discord.File(buffer, filename='slangcount.png')
+        file = discord.File(buffer, filename='slangcount2.png')
         await ctx.send(embed=embed)
         await ctx.send(file=file)
 
@@ -228,7 +228,7 @@ async def print_server_count_week(ctx):
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    file = discord.File(buffer, filename='slangcount.png')
+    file = discord.File(buffer, filename='slangcount3.png')
     await ctx.send(embed=embed)
     await ctx.send(file=file)
     plt.close(fig)
