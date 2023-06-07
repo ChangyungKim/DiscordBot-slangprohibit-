@@ -86,7 +86,11 @@ async def commandlist(ctx):
     help_embed=discord.Embed(title="명령어 도움말", description="이 봇이 제공하는 명령어들입니다.", color=0x00ff00)
     help_embed.add_field(name='!인사', value='봇이 인사해줍니다.', inline=False)
     help_embed.add_field(name='!멤버', value='현재 음성 채널에 있는 멤버를 출력해줍니다.', inline=False)
-
+    help_embed.add_field(name='!하루통계', value='하루에 욕설한 사람과 욕설 횟수를 표와 그래프로 보여줍니다.', inline=False)
+    help_embed.add_field(name='!1주통계', value='한 주동안 욕설한 사람과 욕설 횟수를 표와 그래프로 보여줍니다.', inline=False)
+    help_embed.add_field(name='!5주통계', value='5주동안 욕설한 사람과 욕설 횟수를 표와 그래프로 보여줍니다.', inline=False)
+    help_embed.add_field(name='!금지어추가 (단어)', value='해당 채팅방에 금지어로 사용할 단어를 추가합니다.', inline=False)
+    help_embed.add_field(name='!금지어확인', value='금지어로 설정된 단어를 보여줍니다.', inline=False)
     await ctx.send(embed=help_embed)
 
 @client.command(name='인사')
@@ -260,7 +264,7 @@ async def print_ban_word(ctx):
     for i in range(0,len(response.json())):
         server=response.json()[i]["server"]
         ban_word=response.json()[i]["banned"]
-        out=server+'/'+ban_word
+        out=ban_word
         await ctx.send(out)
 ############################################################################
 
