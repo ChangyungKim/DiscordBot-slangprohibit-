@@ -35,7 +35,7 @@ logger = logging.getLogger("speech.spch_rcgn")
 logger.setLevel(logging.WARNING)
 
 bad_words = ["바보", "멍청이", "똥개"]
-user=["찬경"]
+user=[]
 user_count=[]
 @client.event
 async def on_message(message):
@@ -105,42 +105,7 @@ async def present_member(ctx):
     
 ##################################통계 관련 기능 추가##########################################
 
-<<<<<<< HEAD
-=======
-@client.command(name='user_count_date')
-async def print_user_count_date(ctx):
-    url=host_url+serverid+"/aaaa/count_date/2023/05/18"
-    response=requests.get(url)
-    print("status_code:{}".format(response.status_code))
-    if len(response.json())==0:
-        print("list is empty")
-
-    else:
-        serverid=response.json()["server"]
-        userid=response.json()["user"]
-        count_date=response.json()["count"]
-        date=response.json()["date"]
-        out =serverid+'/'+userid+'/'+str(count_date)+'/'+str(date)+'/'
-        await ctx.send(out)
-    
-@client.command(name='user_count_week')
-async def print_user_count_week(ctx):
-    url=host_url+serverid+"/aaaa/count_week/2023/20"
-    response=requests.get(url)
-    print("status_code:{}".format(response.status_code))
-    if len(response.json())==0:
-        print("list is empty")
-    else:
-        serverid=response.json()["server"]
-        userid=response.json()["user"]
-        count_week=response.json()["count"]
-        year=response.json()["year"]
-        week=response.json()["week"]
-        out =serverid+'/'+userid+'/'+str(count_week)+'/'+str(year)+'/'+str(week)+'/'
-        await ctx.send(out)
->>>>>>> master
-
-@client.command(name='서버하루통계')
+@client.command(name='하루통계')
 async def print_server_count_date(ctx):
     slang_count={}
     embed=discord.Embed(title="오늘 통계", description="오늘 하루 욕설 횟수", color=discord.Color.dark_orange())
@@ -177,7 +142,7 @@ async def print_server_count_date(ctx):
         await ctx.send(file=file)
        
 
-@client.command(name='서버주차통계')
+@client.command(name='1주통계')
 async def print_server_count_week(ctx):
     slang_count={}
     embed=discord.Embed(title="이번주 통계", description="이번주 욕설 횟수", color=discord.Color.dark_orange())
@@ -213,7 +178,7 @@ async def print_server_count_week(ctx):
         await ctx.send(embed=embed)
         await ctx.send(file=file)
 
-@client.command(name='서버5주통계')
+@client.command(name='5주통계')
 async def print_server_count_week(ctx):
     embed = discord.Embed(title="통계", description="주차별 욕설 횟수", color=discord.Color.dark_orange())
     serverid = str(ctx.message.guild.id)
@@ -266,37 +231,6 @@ async def print_server_count_week(ctx):
 
 
 
-############################################################################
-
-
-################################금지어 관련 기능 추가############################################
-
-@client.command(name='금지어추가')
-async def 금지어추가(ctx,*,text):
-    server=str(ctx.message.guild.id)
-    url_storeban=host_url+"storeban/"
-    ban_word=text
-    ban_json={"server":server,"banned":ban_word}
-    response=requests.post(url_storeban, json=ban_json)
-    if response.status_code==201:
-        await ctx.send("금지어 '"+text+"' 가 추가되었습니다.")
-    elif response.status_code==400:
-        await ctx.send("금지어 '"+text+"' 는 이미 추가되어 있습니다.")
-
-
-
-@client.command(name='금지어확인')
-async def print_ban_word(ctx):
-    serverid=str(ctx.message.guild.id)
-    url=host_url+serverid+"/banned_check/"
-    response=requests.get(url)
-    print("status_code:{}".format(response.status_code))
-    
-    for i in range(0,len(response.json())):
-        server=response.json()[i]["server"]
-        ban_word=response.json()[i]["banned"]
-        out=server+'/'+ban_word
-        await ctx.send(out)
 ############################################################################
 
 
