@@ -67,8 +67,9 @@ class SpeechCog(commands.Cog):
             serverid = ctx.guild.id  # random
             sentence_json = {"server": serverid, "user": userid, "sentence": spoken_sentence}
             request = requests.post(url_storesentence, json=sentence_json)
-
-            # await ctx.send(f"<@{user}> said: {text}")
+            count=request.json()["count"]
+            if count>0:
+                await ctx.send(f"<@{user}> ")
 
 
 def setup(bot):
