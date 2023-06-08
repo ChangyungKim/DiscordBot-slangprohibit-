@@ -214,7 +214,7 @@ async def print_server_count_week(ctx):
                 embed.add_field(name=user.name, value=count_week, inline=True)
                 users.append(user.name)
                 slang.append(count_week)
-            embed.add_field(name="주차", value=week_pasing, inline=True)
+            embed.add_field(name="주차", value=week_pasing, inline=False)
     user_len=int(len(users)/5)
     for i in range(user_len):
         indices=[idx for idx in range(len(users)) if idx % user_len==i]
