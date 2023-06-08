@@ -42,9 +42,8 @@ plt.rcParams['font.family']='Malgun Gothic'
 async def on_message(message):
     user=message.content[2:-1]
     print(user)
-    for u in message.guild.members.id:
-        print(u)
-        if u==user:
+    for u in message.guild.members:
+        if str(u.id)==user:
             for i in range(5):
                 await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
                 await asyncio.sleep(0.5)
