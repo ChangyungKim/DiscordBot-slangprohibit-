@@ -37,6 +37,7 @@ logger.setLevel(logging.WARNING)
 bad_words = ["바보", "멍청이", "똥개"]
 user=[]
 user_count=[]
+plt.rcParams['font.family']='Malgun Gothic'
 @client.event
 async def on_message(message):
     if 'said' in message.content:
@@ -171,9 +172,9 @@ async def print_server_count_week(ctx):
         users = list(slang_count.keys())
         slang = list(slang_count.values())
         plt.bar(users, slang)
-        plt.xlabel('욕설 사용자')
-        plt.ylabel('욕설 횟수')
-        plt.title('욕설 사용 통계')
+        plt.xlabel('slang user')
+        plt.ylabel('slang count')
+        plt.title('slang count statistics')
 
         buffer = BytesIO()
         plt.savefig(buffer, format='png')
