@@ -143,6 +143,7 @@ async def print_server_count_date(ctx):
         file=discord.File(buffer, filename='slangcount1.png')
         await ctx.send(embed=embed)
         await ctx.send(file=file)
+        plt.clf()
        
 
 @client.command(name='1주통계')
@@ -180,6 +181,7 @@ async def print_server_count_week(ctx):
         file = discord.File(buffer, filename='slangcount2.png')
         await ctx.send(embed=embed)
         await ctx.send(file=file)
+        plt.clf()
 
 @client.command(name='5주통계')
 async def print_server_count_week(ctx):
@@ -231,6 +233,7 @@ async def print_server_count_week(ctx):
     await ctx.send(embed=embed)
     await ctx.send(file=file)
     plt.close(fig)
+    plt.clf()
 
 
 
