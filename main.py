@@ -44,7 +44,7 @@ async def on_message(message):
     for u in message.guild.members:
         if str(u.id)==user:
             for i in range(5):
-                await message.channel.send(f"{u.mention}님, 욕설은 삼가해주세요!")
+                await message.author.send(f"{u.mention}")
                 await asyncio.sleep(0.5)
             
             await message.channel.send(f"{u.mention}님을 뮤트 처리 했습니다.")
