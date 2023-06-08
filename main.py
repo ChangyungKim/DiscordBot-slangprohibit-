@@ -44,7 +44,7 @@ async def on_message(message):
     for u in message.guild.members:
         if str(u.id)==user:
             for i in range(5):
-                specific_user=client.fetch_user(u.id)
+                specific_user=await client.fetch_user(u.id)
                 await specific_user.send(f"{u.mention}님 욕설을 삼가해주세요.")
                 await asyncio.sleep(0.5)
             
