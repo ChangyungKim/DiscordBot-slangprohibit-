@@ -40,9 +40,9 @@ plt.rcParams['font.family']='Malgun Gothic'
 
 @client.event
 async def on_message(message):
-    user=message.content[1:]
+    user=message.content[2:-1]
     print(user)
-    for u in message.guild.members:
+    for u in message.guild.members.id:
         print(u)
         if u==user:
             for i in range(5):
