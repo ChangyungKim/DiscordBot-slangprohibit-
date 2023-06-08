@@ -43,19 +43,20 @@ async def on_message(message):
     user=message.content[2:-1]
     print(user)
     for u in message.guild.members:
+        print(u)
         if str(u.id)==user:
             for i in range(5):
-                await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
+                await message.channel.send(f"{u}님, 욕설은 삼가해주세요!")
                 await asyncio.sleep(0.5)
             
-            await message.channel.send(f"{message.author.mention}님을 뮤트 처리 했습니다.")
-            await message.author.edit(mute=True)
-
+            await message.channel.send(f"{u}님을 뮤트 처리 했습니다.")
+            chk=0
+            await u.edit(mute=True)
             await asyncio.sleep(30)
+            await u.edit(mute=False)
+            if chk: break
 
-            await message.author.edit(mute=False)
-
-            await message.channel.send(f"{message.author.mention}님의 뮤트 처리를 해제했습니다.")
+            await message.channel.send(f"{u}님의 뮤트 처리를 해제했습니다.")
             return
     await client.process_commands(message)
 
