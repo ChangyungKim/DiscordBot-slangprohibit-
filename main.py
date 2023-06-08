@@ -49,15 +49,35 @@ async def on_message(message):
                 await specific_user.send(f"{u.mention}님 욕설을 삼가해주세요.")
                 await asyncio.sleep(0.5)
             
-            await message.channel.send(f"{u.mention}님을 뮤트 처리 했습니다.")
-            chk=0
-            await u.edit(mute=True, deafen=True)
-            await asyncio.sleep(30)
-            await u.edit(mute=False, deafen=False)
-            if chk: break
+            serverid=str(message.guild.id)
+            year=str(datetime.date.today().year)
+            month=str(datetime.date.today().month)
+            day=str(datetime.date.today().day)
 
-            await message.channel.send(f"{u.mention}님의 뮤트 처리를 해제했습니다.")
-            return
+            url_userdate=host_url+serverid+'/'+user+"/count_date/"+year+"/"+month+"/"+day
+            response=requests.get(url_userdate)
+            count_date=response.json()["count"]
+            if count_date>10:
+
+                await message.channel.send(f"{u.mention}님을 뮤트 처리 했습니다.")
+                chk=0
+                await u.edit(mute=True, deafen=True)
+                await asyncio.sleep(30)
+                await u.edit(mute=False, deafen=False)
+                if chk: break
+
+                await message.channel.send(f"{u.mention}님의 뮤트 처리를 해제했습니다.")
+                return
+            elif count_date>5:
+                await message.channel.send(f"{u.mention}님을 뮤트 처리 했습니다.")
+                chk=0
+                await u.edit(mute=True)
+                await asyncio.sleep(30)
+                await u.edit(mute=False)
+                if chk: break
+
+                await message.channel.send(f"{u.mention}님의 뮤트 처리를 해제했습니다.")
+                return
     await client.process_commands(message)
 
 @client.command(name='명령어')
