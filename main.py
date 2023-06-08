@@ -81,6 +81,11 @@ async def on_message(message):
     #         return
     await client.process_commands(message)
 
+@client.command(name='userid')
+async def commandlist(ctx):
+    userid=str(ctx.message.author.id)
+    await ctx.send("당신은 "+userid+"입니다.")
+
 @client.command(name='명령어')
 async def commandlist(ctx):
     help_embed=discord.Embed(title="명령어 도움말", description="이 봇이 제공하는 명령어들입니다.", color=0x00ff00)
