@@ -34,52 +34,30 @@ logging.basicConfig(format="%(message)s")
 logger = logging.getLogger("speech.spch_rcgn")
 logger.setLevel(logging.WARNING)
 
-bad_words = ["바보", "멍청이", "똥개"]
 user=[]
 user_count=[]
 plt.rcParams['font.family']='Malgun Gothic'
+
 @client.event
 async def on_message(message):
-    if 'said' in message.content:
-        u = message.content.split('said:')[0].strip()
-        t = message.content.split('said:')[1].strip()
-        url_storesentence = host_url+"storesentence/"
-        userid = u
-        spoken_sentence = t
-        serverid = "aaa" #random
-        sentence_json = {"server": serverid, "user": userid, "sentence": spoken_sentence}
-        request = requests.post(url_storesentence, json=sentence_json)
-        count = request.json()["count"]
-        if count > 0:
-            await message.channel.send(f"{u}님, 욕설은 삼가해주세요!")
-            await asyncio.sleep(0.5)
-            await message.channel.send(f"{u}님을 뮤트 처리 했습니다.")
-            chk = False
-            for member in message.guild.members:
-                if str(member.id) == u[2:-1]:
-                    chk = True
-                    await member.edit(mute=True)
-                    await asyncio.sleep(30)
-                    await member.edit(mute=False)
-                if chk: break
+    user=message.content[1:]
+    print(user)
+    for u in message.guild.members:
+        print(u)
+        if u==user:
+            for i in range(5):
+                await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
+                await asyncio.sleep(0.5)
+            
+            await message.channel.send(f"{message.author.mention}님을 뮤트 처리 했습니다.")
+            await message.author.edit(mute=True)
 
+            await asyncio.sleep(30)
 
-        await message.channel.send(f"{u}님의 뮤트 처리를 해제했습니다.")
-        return
-    # for word in bad_words:
-    #     if word in message.content:
-    #         for i in range(5):
-    #             await message.author.send(f"{message.author.mention}님, 욕설은 삼가해주세요!")
-    #             await asyncio.sleep(0.5)
-    #         await message.channel.send(f"{message.author.mention}님을 뮤트 처리 했습니다.")
-    #         await message.author.edit(mute=True)
-    #         await message.channel.send(message.author)
-    #         await asyncio.sleep(30)
-    #
-    #         await message.author.edit(mute=False)
-    #
-    #         await message.channel.send(f"{message.author.mention}님의 뮤트 처리를 해제했습니다.")
-    #         return
+            await message.author.edit(mute=False)
+
+            await message.channel.send(f"{message.author.mention}님의 뮤트 처리를 해제했습니다.")
+            return
     await client.process_commands(message)
 
 @client.command(name='명령어')
