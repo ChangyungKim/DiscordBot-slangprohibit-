@@ -1,6 +1,6 @@
 import asyncio
 import logging
-
+import requests
 import discord
 from discord.ext import commands
 from speech_recognition import RequestError, UnknownValueError
@@ -8,7 +8,7 @@ from speech_recognition import RequestError, UnknownValueError
 from speech.spch_snk import SpchSnk
 
 logger = logging.getLogger("speech.spch_rcgn")
-
+host_url="http://15.164.32.148:8000/"
 
 class SpeechCog(commands.Cog):
     def __init__(self, bot):
@@ -24,7 +24,7 @@ class SpeechCog(commands.Cog):
 
         vc = await voice.channel.connect()
         self.connections.update({ctx.guild.id: vc})
-
+ 
         # The recording takes place in the sink object.
         # SRSink will discard the audio once is transcribed.
         vc.start_recording(SpchSnk(self.speech_callback_bridge, ctx), self.stop_callback)
@@ -61,7 +61,14 @@ class SpeechCog(commands.Cog):
                 exc_info=e,
             )
         else:
-            await ctx.send(f"<@{user}> said: {text}")
+            url_storesentence = host_url + "storesentence/"
+            userid = user
+            spoken_sentence = text
+            serverid = ctx.guild.id  # random
+            sentence_json = {"server": serverid, "user": userid, "sentence": spoken_sentence}
+            request = requests.post(url_storesentence, json=sentence_json)
+
+            # await ctx.send(f"<@{user}> said: {text}")
 
 
 def setup(bot):
