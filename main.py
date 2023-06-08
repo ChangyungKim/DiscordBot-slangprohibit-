@@ -42,6 +42,7 @@ plt.rcParams['font.family']='Malgun Gothic'
 async def on_message(message):
     user=message.content[2:-1]
     for u in message.guild.members:
+
         if str(u.id)==user:
             for i in range(5):
                 specific_user=await client.fetch_user(u.id)
@@ -50,9 +51,9 @@ async def on_message(message):
             
             await message.channel.send(f"{u.mention}님을 뮤트 처리 했습니다.")
             chk=0
-            await u.edit(mute=True)
+            await u.edit(mute=True, deafen=True)
             await asyncio.sleep(30)
-            await u.edit(mute=False)
+            await u.edit(mute=False, deafen=False)
             if chk: break
 
             await message.channel.send(f"{u.mention}님의 뮤트 처리를 해제했습니다.")
