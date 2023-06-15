@@ -36,4 +36,7 @@ python manage.py createsuperuser
 python manage.py makemigrations  
 python manage.py migrate  
 python manage.py runserver 0.0.0.0:8000  
-그러면 main.py에서 host_url을 127.0.0.1로 하면 local로 서버가 실행된다.*    
+그러면 main.py에서 host_url을 127.0.0.1로 하면 local로 서버가 실행된다.*  
+
+>#### <라이브러리 한번에 설치하는 법>
+>>*pip install -r requirements.txt 를 입력하여 설치를 한 번에 할 수 있다.*
