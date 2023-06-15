@@ -27,4 +27,13 @@
 >>>*6-1. 금지어 추가  
 "!금지어추가(단어)" 입력시 해당 채팅방에 금지어로 사용할 단어를 추가한다.*  
 >>>*6-2. 금지어 확인  
-"!금지어확인" 입력시 금지어로 설정된 단어를 보여준다.*
+"!금지어확인" 입력시 금지어로 설정된 단어를 보여준다.*  
+
+>#### <서버 관련 주의사항>
+>>*mysite폴더 내에서 setting.py에 DB 관련 설정을 자신의 DB프로그램에 맞게 고치도록 해야한다.    
+이후 manage.py 상위 폴더에서 실행  
+python manage.py createsuperuser  
+python manage.py makemigrations  
+python manage.py migrate  
+python manage.py runserver 0.0.0.0:8000  
+그러면 main.py에서 host_url을 127.0.0.1로 하면 local로 서버가 실행된다.*    
